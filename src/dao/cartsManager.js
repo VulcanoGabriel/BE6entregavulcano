@@ -108,21 +108,58 @@ class cartManager {
 
 }
 
+delCartProductsT = async (idC) => {
+
+    try{
+
+        let encontrarC = await this.getCartId(idC)
+
+        if (encontrarC)
+
+        {
+            await cartModel.updateOne({id: idC}, {$set: {products: []} })
+
+        }
 
 
-    addProductCart = async (carritoNum, productoId) => {
+    }
+
+
+
+
+
+
+    catch
+        (e)  {console.log(e)}
+}
+
+
+
+
+    addProductCart = async (idC, idP, body) => {
 
         try{
-        let carritoId = await this.getCartId(carritoNum)
+
+            let bodyQ = body
+
+            console.log(
+                bodyQ
+            )
+
+        let carritoId = await this.getCartId(idC)
 
         if (!carritoId) return (`no se encontro el carrito por el ID ingresado`)
 
-        let productoEncontrado = carritoId.products.find(item => item.product === productoId)
+        // let productoEncontrado = carritoId.products.find(item => item.product === idP)
 
-        if (productoEncontrado) {
+        let productoEncontrado = await cartModel.find({id: idC, 'products.product': idP})
 
-            await cartModel.updateMany({id: carritoNum, 'products.product': productoId},
-                {$inc:  {'products.$.quantity': 1}}
+            console.log(productoEncontrado)
+
+        if (productoEncontrado ) {
+
+            await cartModel.updateOne({id: idC, 'products.product': idP},
+                {$inc:  {'products.$.quantity': bodyQ}}
                 
                 )
 
@@ -137,6 +174,41 @@ class cartManager {
        
     }
     catch(e) {console.log(e)}
+
+}
+
+
+//sii
+
+addProductsArrayCart = async (idC, body) => {
+
+
+    try{
+            
+
+        let carritoId = await this.getCartId(idC)
+
+        let productsB =  await body
+
+   
+            if(carritoId && productsB){
+     
+
+                await cartModel.updateOne({ id: idC }, { $push: { products: { $each: productsB } } });
+
+               
+                    return "productos agregados correctamente"
+
+
+            } else {return "faltan parametros"}
+
+
+    }
+    catch(e) {console.log(e); 
+        return "error al agregar productos"}
+
+
+
 
 }
     
