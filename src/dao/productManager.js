@@ -110,43 +110,24 @@ class productManager {
       if (datosSi) {
         // this.listado = datosSi;
 
-        //  let buscado =   await productsModel.find({"id": idU})
+        //  let buscado =   await productsModel.findOne({"id": idU})
 
-        // console.log(buscado)
-        await productsModel.updateOne({ "id": idU }, { $rename: { campo } })
+        // Construye un objeto con las modificaciones utilizando $set
+        const setObj = { $set: {} };
+        campo.forEach(campos => {
+            const campoL = Object.keys(campos)[0]; // Obtiene el nombre del campo a modificar
+            const valor = campos[campoL];
+            setObj.$set[campoL] = valor;
+        });
+
+
+        await productsModel.updateOne({ "id": idU },  setObj )
 
 
       } else {
         return `No hay productos en la base de datos.`
       }
-      //buscamos el ID del producto a actualizar
-
-      // let idEncontrada2 = await this.listado.find((idE) => idE.id === idU);
-
-      //creamos un array nuevo para poner el producto modificado
-
-      // let newArr = await this.listado.filter((prod) => prod !== idEncontrada2);
-
-      // console.log(newArr)
-
-      // de existir la ID buscamos el campo a actualizar en el objeto y lo reemplazamos en la ubicacion de this.listado
-
-      // for (let llaveCampo in campo) {
-      //   if (idEncontrada2.hasOwnProperty(llaveCampo)) {
-      //     idEncontrada2[llaveCampo] = campo[llaveCampo];
-      //     newArr.push(idEncontrada2);
-      //     this.listado = newArr;
-      //     await productsModel.updateMany(this.listado) 
-      //     ;
-      // return `Producto ${idU} actualizado`;
-      // }
-
-      // return "producto no encontrado";
-      // }
-
-      //escribimos el arhivo con los datos de nuestro listado a su vercion final
-
-      // await productsModel.insertMany(this.listado) ;
+     
     }
     catch (e) { console.log(e) }
   };

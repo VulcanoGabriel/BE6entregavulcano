@@ -66,7 +66,10 @@ router.put(`/:id`, async (req, res) => {
 
   const body = req.body
 
+console.log(body)
+
   const idR = parseInt(req.params.id)
+
 
   console.log(idR)
 

@@ -142,9 +142,7 @@ delCartProductsT = async (idC) => {
 
             let bodyQ = body
 
-            console.log(
-                bodyQ
-            )
+        
 
         let carritoId = await this.getCartId(idC)
 
@@ -154,7 +152,7 @@ delCartProductsT = async (idC) => {
 
         let productoEncontrado = await cartModel.find({id: idC, 'products.product': idP})
 
-            console.log(productoEncontrado)
+          
 
         if (productoEncontrado ) {
 
