@@ -3,7 +3,6 @@ import products from "./src/router/router.products.js"
 import carts from "./src/router/router.cart.js"
 import productManager from "./src/dao/productManager.js"
 import chatModel from "./src/dao/models/chat.models.js"
-import productsModel from "./src/dao/models/products.models.js"
 
 import mongoose from "mongoose"
 
@@ -56,7 +55,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 
-
 // rutas
 
 app.use("/", viewsRouter)
@@ -64,6 +62,7 @@ app.use("/", viewsRouter)
 app.use("/api/products", products)
 
 app.use("/api/carts", carts)
+
 
 //abro servidor dentro de una contante para pasarlo a el serversocket
 

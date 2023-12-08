@@ -13,22 +13,20 @@ socket.on("products", (products) => {
 
     products.forEach(product => {
 
-        contenedorProductos.innerHTML += '<div>' +
-            '<p>' + product.id + '</p>' +
-            '<p>' + product.title + '</p>' +
-            '<p>' + product.description + '</p>' +
-            '<p>' + product.code + '</p>' +
-            '<p>' + product.price + '</p>' +
-            '<p>' + product.stock + '</p>' +
-            '<p>' + product.category + '</p>' +
+        contenedorProductos.innerHTML += '<div>' + '</br>' +
+            '<p>' + 'ID : ' + product.id + '</p>' +
+            '<p>' + 'Nombre : ' + product.title + '</p>' +
+            '<p>' + 'Descripcion : ' + product.description + '</p>' +
+            '<p>' + 'Codigo : ' + product.code + '</p>' +
+            '<p>' + 'Precio : ' + product.price + '</p>' +
+            '<p>' + 'Stock : ' + product.stock + '</p>' +
+            '<p>' + 'Categoria : ' + product.category + '</p>' +
             '</div>'
 
     });
 
 
 })
-
-
 
 //por medio de este ID escuchamos el click , que va a guardar en variables los valores de cada campo , al ingresarlos los metemos en otra variable para que 
 //tenga la estructura de cada campo en el que trabajamos en nuestro manager para agregar producto , al hacer click y enviar los datos desde el app.js
@@ -60,7 +58,6 @@ button.addEventListener("click", (e) => {
         title, price, thumbnail, stock, code, description, category
 
     }
-
 
     socket.emit("productoAdd", producto
 

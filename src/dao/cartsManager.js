@@ -8,6 +8,8 @@ class cartManager {
 
     getCarts = async () => {
         try {
+
+
             //buscamos si existe el documento con los datos
 
             let carritoSi = await cartModel.find()
@@ -37,16 +39,18 @@ class cartManager {
 
         let carritoId = await this.getCarts()
 
+        console.log(carritoId)
+
         //contamos la totalidad de carritos para darle un id que no se repita
 
-        let carritoL = await carritoId.length
+        let carritoL = await parseInt(carritoId.length)
 
         //creamos un objeto molde para darle una id y un array nuevo por dentro para agregar productos proximamente al carrito
 
         const carritoMolde = {
 
             id: carritoL + 1,
-            products: body.map(p => ({product: p.id}))
+            products: body.map(p => ({ id: p.id }))
         }
 
         // traemos los carritos , y le agregamos el objeto nuevo lo escribimos en el archivo principal
@@ -55,7 +59,7 @@ class cartManager {
 
                 await cartModel.insertMany([carritoMolde])
 
-            } 
+            }
         }
         catch (error) {
             console.error(error);
@@ -65,153 +69,136 @@ class cartManager {
 
     getCartId = async (id) => {
 
-        try{
-        let obtenerCarrito = await this.getCarts()
+        try {
 
-        this.lista = obtenerCarrito
+            cartModel.find({ id: id })
+                .populate('products')
 
-        //de todos los carritos encontramos el que coincida por ID
+            let obtenerCarrito = await this.getCarts()
 
-        let encontrarCarrito = await this.lista.find((f) => f.id === id)
+            this.lista = obtenerCarrito
+
+            //de todos los carritos encontramos el que coincida por ID
+
+            let encontrarCarrito = await this.lista.find((f) => f.id === id)
 
 
-        if (encontrarCarrito) { return encontrarCarrito }
+            if (encontrarCarrito) { return encontrarCarrito }
 
-        //sino encontramos el carrito >>>>
-         else { return `carrito no encontrado por ID`}
-        
+            //sino encontramos el carrito >>>>
+            else { return `carrito no encontrado por ID` }
 
         }
-    catch (e) {console.log(e)
-    }
+        catch (e) {
+            console.log(e)
+        }
     }
 
     delCartProd = async (pid, cid) => {
 
-        try{
+        try {
 
             //usamos updateOne para actualizar datos en un documento en este caso borrar uno en especifico
             //le decimos que busque el id del primer array que son los carritos que coincida con el pasado desde router.cart por url
 
+            await cartModel.updateOne({ id: cid },
 
-        await cartModel.updateOne({id: cid},
-            
-            //como segundo parametro le decimos lo que queremos hacer en este caso pull , borrar un dato de el array products el id que coincida por el pasado desde 
-            //router.cart por url 
+                //como segundo parametro le decimos lo que queremos hacer en este caso pull , borrar un dato de el array products el id que coincida por el pasado desde 
+                //router.cart por url 
 
-            {$pull: {products: {id: pid}}}
-            
+                { $pull: { products: { id: pid } } }
+
             )
 
-    }
-    catch(e) {console.log(e)}
-
-}
-
-delCartProductsT = async (idC) => {
-
-    try{
-
-        let encontrarC = await this.getCartId(idC)
-
-        if (encontrarC)
-
-        {
-            await cartModel.updateOne({id: idC}, {$set: {products: []} })
-
         }
-
+        catch (e) { console.log(e) }
 
     }
 
+    delCartProductsT = async (idC) => {
 
+        try {
 
+            let encontrarC = await this.getCartId(idC)
 
+            if (encontrarC) {
+                await cartModel.updateOne({ id: idC }, { $set: { products: [] } })
 
-
-    catch
-        (e)  {console.log(e)}
-}
-
-
+            }
+        }
+        catch
+        (e) { console.log(e) }
+    }
 
 
     addProductCart = async (idC, idP, body) => {
 
-        try{
+        try {
 
             let bodyQ = body
 
-        
 
-        let carritoId = await this.getCartId(idC)
 
-        if (!carritoId) return (`no se encontro el carrito por el ID ingresado`)
+            let carritoId = await this.getCartId(idC)
 
-        // let productoEncontrado = carritoId.products.find(item => item.product === idP)
+            if (!carritoId) return (`no se encontro el carrito por el ID ingresado`)
 
-        let productoEncontrado = await cartModel.find({id: idC, 'products.product': idP})
+            // let productoEncontrado = carritoId.products.find(item => item.product === idP)
 
-          
+            let productoEncontrado = await cartModel.find({ id: idC, 'products.product': idP })
 
-        if (productoEncontrado ) {
 
-            await cartModel.updateOne({id: idC, 'products.product': idP},
-                {$inc:  {'products.$.quantity': bodyQ}}
-                
+
+            if (productoEncontrado) {
+
+                await cartModel.updateOne({ id: idC, 'products.product': idP },
+                    { $inc: { 'products.$.quantity': bodyQ } }
+
                 )
 
-        } else {
+            } else {
 
-            await cartModel.updateOne({id: carritoNum},
-                    {$push: {products: {product: productoId, quantity: 1}}}
-                
+                await cartModel.updateOne({ id: carritoNum },
+                    { $push: { products: { product: productoId, quantity: 1 } } }
+
                 )
+
+            }
 
         }
-       
+        catch (e) { console.log(e) }
+
     }
-    catch(e) {console.log(e)}
 
-}
-
-
-//sii
-
-addProductsArrayCart = async (idC, body) => {
+    addProductsArrayCart = async (idC, body) => {
 
 
-    try{
-            
+        try {
 
-        let carritoId = await this.getCartId(idC)
 
-        let productsB =  await body
+            let carritoId = await this.getCartId(idC)
 
-   
-            if(carritoId && productsB){
-     
+            let productsB = await body
+
+
+            if (carritoId && productsB) {
+
 
                 await cartModel.updateOne({ id: idC }, { $push: { products: { $each: productsB } } });
 
-               
-                    return "productos agregados correctamente"
+
+                return "productos agregados correctamente"
 
 
-            } else {return "faltan parametros"}
+            } else { return "faltan parametros" }
 
 
+        }
+        catch (e) {
+            console.log(e);
+            return "error al agregar productos"
+        }
     }
-    catch(e) {console.log(e); 
-        return "error al agregar productos"}
-
-
-
-
-}
-    
-
-
 }
 
 export default cartManager

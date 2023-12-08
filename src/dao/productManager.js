@@ -12,7 +12,9 @@ class productManager {
 
     let p = await this.getProducts()
 
-    console.log(p)
+    this.listado = p
+
+    // console.log(p)
 
     let totalId = (await p).length
 
@@ -31,24 +33,24 @@ class productManager {
 
     try {
       if (p) {
-        const data = p;
-        this.listado = data;
+
+        // console.log(this.listado)
 
         if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
           return "Faltan parametros";
         }
 
 
-        if (this.listado.some((product) => product.code === code)) {
-          return `El codigo delproducto ${code} ya esta ingresado`;
-        } else {
-          this.listado.push(product);
+        let codigoR = await productsModel.findOne({ code })
 
+        if (codigoR) {
+          return "codigo repetido"
+        } else {
           //usamos el modelo de producto para insertar productos a nuestra base de datos
 
-          await productsModel.insertMany(product)
+          await productsModel.create(product)
 
-          return product
+          // return product
         }
       }
     }
@@ -66,17 +68,18 @@ class productManager {
       const productosSi = await productsModel.find().lean().exec()
 
       if (productosSi) {
-        this.listado = productosSi
+        return productosSi
 
       } else {
         return `No se encontraron productos.`
       }
-      return this.listado
 
     }
     catch (e) { console.log(e) }
 
   }
+
+
 
   //Metodo para traer un producto de this.path por su ID ///////////////////////////////////////////////////////////////////////////////
 
@@ -115,19 +118,19 @@ class productManager {
         // Construye un objeto con las modificaciones utilizando $set
         const setObj = { $set: {} };
         campo.forEach(campos => {
-            const campoL = Object.keys(campos)[0]; // Obtiene el nombre del campo a modificar
-            const valor = campos[campoL];
-            setObj.$set[campoL] = valor;
+          const campoL = Object.keys(campos)[0]; // Obtiene el nombre del campo a modificar
+          const valor = campos[campoL];
+          setObj.$set[campoL] = valor;
         });
 
 
-        await productsModel.updateOne({ "id": idU },  setObj )
+        await productsModel.updateOne({ "id": idU }, setObj)
 
 
       } else {
         return `No hay productos en la base de datos.`
       }
-     
+
     }
     catch (e) { console.log(e) }
   };
@@ -139,11 +142,10 @@ class productManager {
 
       //usamos metodo que encuentra y borra un dato , le pasamos la id desde el html por el socket hasta el manager
 
-      await productsModel.findOneAndDelete(id),
+      await productsModel.findOneAndDelete({ id });
 
-        await this.getProducts()
+      return "se elimino el producto con exito"
 
-      return await this.getProducts()
     }
     catch (e) { console.log(e) }
   }

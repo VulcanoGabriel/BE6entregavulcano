@@ -1,45 +1,41 @@
-        document.getElementById("btnPrev").onclick = () => {
-        const prevPage = document.getElementById("prevPage").value
+document.getElementById("btnPrev").onclick = () => {
+  const prevPage = document.getElementById("prevPage").value
 
-        const limit = document.getElementById("limit").value
+  const limit = document.getElementById("limit").value
 
-        const query = document.getElementById("query").value
+  const query = document.getElementById("query").value
 
-        const url = `/?page=${prevPage}&limit=${limit}&query=${query}`
+  const url = `/?page=${prevPage}&limit=${limit}&query=${query}`
 
-        document.location.href = url
+  document.location.href = url
 
-    }
+}
 
+document.getElementById("btnNext").onclick = () => {
+  const prevPage = document.getElementById("nextPage").value
 
+  const limit = document.getElementById("limit").value
 
-      document.getElementById("btnNext").onclick = () => {
-        const prevPage = document.getElementById("nextPage").value
+  const query = document.getElementById("query").value
 
-        const limit = document.getElementById("limit").value
+  const url = `/?page=${prevPage}&limit=${limit}&query=${query}`
 
-        
-        const query = document.getElementById("query").value
+  document.location.href = url
 
-        const url = `/?page=${prevPage}&limit=${limit}&query=${query}`
+}
 
-        document.location.href = url
+document.getElementById("btnPage").onclick = () => {
 
-    }
+  const pagina = document.getElementById("page").value
 
-    document.getElementById("btnPage").onclick = () => {
-
-        const pagina = document.getElementById("page").value
-
-         const limit = document.getElementById("limit").value
-
-         
-        const query = document.getElementById("query").value
-
-        const url = `/?page=${pagina}&limit=${limit}&query=${query}`
-        
-        document.location.href = url
+  const limit = document.getElementById("limit").value
 
 
-    }
+  const query = document.getElementById("query").value
+
+  const url = `/?page=${pagina}&limit=${limit}&query=${query}`
+
+  document.location.href = url
+
+}
 

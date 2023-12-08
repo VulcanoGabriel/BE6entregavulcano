@@ -7,7 +7,6 @@ router.get("/", async (req, res) => {
 
     try {
 
-
         const cartm1 = new cartManager()
 
         let carritoTotal = await cartm1.getCarts()
@@ -19,7 +18,6 @@ router.get("/", async (req, res) => {
 
 
 })
-
 
 router.post("/", async (req, res) => {
 
@@ -38,25 +36,24 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
 
+    try {
+        const idCarrito = parseInt(req.params.cid)
 
-    try{
-    const idCarrito = parseInt(req.params.cid)
+        const cartM1 = new cartManager()
 
-    const cartM1 = new cartManager()
+        let contenidoId = await cartM1.getCartId(idCarrito)
 
-    let contenidoId = await cartM1.getCartId(idCarrito)
-
-    res.json(contenidoId)
+        res.json(contenidoId)
     }
-    catch(e) {console.log(e);
-        return res.json("no se encontro la ID") }
+    catch (e) {
+        console.log(e);
+        return res.json("no se encontro la ID")
+    }
 })
 
-//si3
+router.put("/:cid", async (req, res) => {
 
-router.put ("/:cid", async (req, res) => {
-
-    try{
+    try {
 
         const body = req.body
 
@@ -64,18 +61,16 @@ router.put ("/:cid", async (req, res) => {
 
         const cartm1 = new cartManager()
 
-     let result =   await cartm1.addProductsArrayCart(idC, body)
+        let result = await cartm1.addProductsArrayCart(idC, body)
 
-     res.json(result)
+        res.json(result)
 
     }
-    catch(e) {console.log(e)}
+    catch (e) { console.log(e) }
 
 
 })
 
-
-//2 si
 router.put(`/:cid/product/:pid`, async (req, res) => {
 
     const body = parseInt(req.body.quantity)
@@ -90,7 +85,7 @@ router.put(`/:cid/product/:pid`, async (req, res) => {
 
 
 
-    const cart = await cartM1.addProductCart(idC, idP , body)
+    const cart = await cartM1.addProductCart(idC, idP, body)
 
     if (cart) { res.json(`actualizado con exito`) }
 
@@ -98,69 +93,46 @@ router.put(`/:cid/product/:pid`, async (req, res) => {
 
 })
 
-// router.put(`/:cid/products/:pid`, async(req, res) => {
-
-//     const cartM1 = new cartManager()
-
-//     const idC = parseInt(req.params.cid)
-
-//     const idP = parseInt(req.params.pid)
-
-//     await cartM1.updateQ(idC, idP)
-
-
-// })
-
-
-//si 1
 router.delete(`/:cid/product/:pid`, async (req, res) => {
 
 
-    try{
-    const cartm1 = new cartManager()
+    try {
+        const cartm1 = new cartManager()
 
-    const idC = parseInt(req.params.cid)
+        const idC = parseInt(req.params.cid)
 
-    const idP = parseInt(req.params.pid)
+        const idP = parseInt(req.params.pid)
 
-    const delProd = await cartm1.delCartProd(idP, idC)
+        const delProd = await cartm1.delCartProd(idP, idC)
 
-    if (delProd) {res.json("producto eliminado de carrito con exito")}
+        if (delProd) { res.json("producto eliminado de carrito con exito") }
 
-    else { res.json("producto inexistente")}
+        else { res.json("producto inexistente") }
 
     }
-    catch(e) {console.log(e)}
+    catch (e) { console.log(e) }
 
 
 })
 
-router.delete("/:cid", async (req, res) =>{
+router.delete("/:cid", async (req, res) => {
 
-    try{
+    try {
 
         const cartM1 = new cartManager()
 
         const idC = parseInt(req.params.cid)
 
-     let result =    await cartM1.delCartProductsT(idC)
+        let result = await cartM1.delCartProductsT(idC)
 
-        if (result) { res.json(result)}else {
+        if (result) { res.json(result) } else {
 
 
             res.json("No se pudo actualizar desde postman")
         }
 
-        
-
-
-
-
     }
-    catch(e) {console.log(e)}
-
-
-
+    catch (e) { console.log(e) }
 })
 
 export default router

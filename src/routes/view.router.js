@@ -1,5 +1,7 @@
 import productsModel from "../dao/models/products.models.js";
 import { Router } from "express"
+import cartManager from "../dao/cartsManager.js";
+
 
 // import productManager from "../dao/productManager.js" trabajando desde FS
 
@@ -23,12 +25,17 @@ const router = Router()
 
 
 
-
 //este archivo lo usamos para dar los renderizados a las vista en cada apartado de las url , para no saturar el app.js
 
 //RENDER DESDE MONGOOSE
 
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
+
+    res.json("todo ok")
+
+})
+
+router.get("/products/", async (req, res) => {
 
     //desde FS//////////////////////////////////////////////////////////
 
@@ -48,12 +55,7 @@ router.get("/", async (req, res) => {
 
     const sort = (req.query?.sort ?? "")
 
-    // const check = (req.query?.check ?? "")
-
-
     const search = {}
-
-
 
     try {
 
@@ -69,13 +71,6 @@ router.get("/", async (req, res) => {
         if (sort != 0) {
             options["sort"] = { price: sort == "asc" ? 1 : -1 }
         }
-
-
-        // if(check) {
-
-        //     options["check"] = {stock:  }
-
-        // }   
 
         const result = await productsModel.paginate(search, options)
 
@@ -103,51 +98,48 @@ router.get("/", async (req, res) => {
     }
 
     catch (e) { (console.log(e)), result.status = "error" }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 })
 
 
-
-
-
-
-
-
-
-
-
+//RealTime Products //////////////////////////////////////////////////////
 
 router.get("/realtimeproducts", async (req, res) => {
 
     res.render(`realTimeProducts`)
 })
 
-
-
-
 //CHAT///////////////////////////////////////////////////////////////////
-
-
 
 router.get("/chat", (req, res) => {
 
     res.render("chat", {})
 
+})
+
+// vista 1 carrito (haciendo)
+
+router.get("/carts/:cid", async (req, res) => {
+
+    let idC = parseInt(req.params.cid)
+
+    // let search = {}
+
+    let cam1 = new cartManager()
+
+    let resultados = await cam1.getCartId(idC)
+
+    console.log(resultados)
+
+    res.render("oneC", { res: resultados.doc })
+
+
 
 })
+
+
+
+
+
+
 
 export default router
